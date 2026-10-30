@@ -11,10 +11,12 @@ import {
   Target,
   Pencil,
   Trash2,
+  LogOut,
 } from "lucide-react";
 
 import { useState, useEffect } from "react";
 import api from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -50,6 +52,7 @@ function Dashboard() {
 
   const [editError, setEditError] = useState("");
   const [updating, setUpdating] = useState(false);
+  const navigate = useNavigate();
 
   // Fetch tasks from the backend
   async function fetchTasks() {
@@ -228,6 +231,18 @@ function Dashboard() {
     }
   }
 
+  //create logout function
+  function handleLogout() {
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (!confirmLogout) {
+      return;
+    }
+
+    //remove jwt token
+    localStorage.removeItem("token");
+    navigate("/login", { replace: true });
+  }
+
   // Fetch tasks when the dashboard loads
   useEffect(function () {
     fetchTasks();
@@ -326,6 +341,14 @@ function Dashboard() {
             Small steps every day lead to big results.
           </p>
         </div>
+
+        <button
+          onClick={handleLogout}
+          className="mt-6 flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left font-medium text-red-600 transition hover:bg-red-50"
+        >
+          <LogOut size={20} />
+          Logout
+        </button>
       </aside>
 
       {/* Main Content */}
@@ -605,7 +628,6 @@ function Dashboard() {
                     <option value="in-progress">In Progress</option>
                     <option value="completed">Completed</option>
                   </select>
-
                 </div>
 
                 {/* Due Date */}
